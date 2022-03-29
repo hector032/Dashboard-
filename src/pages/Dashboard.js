@@ -69,7 +69,7 @@ function Dashboard(props) {
                 </Grid>
 
                 <Grid item xs={12} sm={4} md={4} lg={4} xl={4}>
-                  <CardsHeader icono={<PublicIcon className={classes.iconos}/>} titulo="PAÍS" texto="México" color="rgba(248,80,50,1)" font="white"/>
+                <a href="/product"><CardsHeader icono={<PublicIcon className={classes.iconos}/>} titulo="Products" texto="Productos" color="rgba(248,80,50,1)" font="white" /></a>
                 </Grid>
 
                 <Grid item xs={12} sm={4} md={4} lg={4} xl={4}>
