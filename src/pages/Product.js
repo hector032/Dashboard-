@@ -7,12 +7,25 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 
+import Cookies from 'universal-cookie';
+
+
+const cookies = new Cookies();
+
 const urlGet = "http://localhost/ecomoving/public/api/product/list";
 const urlPost = "http://localhost/ecomoving/public/api/product/create";
 const urlPut = "http://localhost/ecomoving/public/api/product/edit/";
 const urlDelete = "http://localhost/ecomoving/public/api/product/delete/";
 
-class App extends Component {
+const token = cookies.get('token');
+
+const header ={
+  headers: {
+    'Authorization': `Bearer `+token
+  }
+};
+
+class Product extends Component {
   state = {
     data: [],
     modalInsertar: false,
@@ -28,7 +41,7 @@ class App extends Component {
   }
 
   peticionGet = () => {
-    axios.get(urlGet).then((response) => {
+    axios.get(urlGet,header).then((response) => {
       console.log(response.data.items);
       this.setState({ data: response.data.items });
     }).catch(error => {
@@ -38,7 +51,7 @@ class App extends Component {
 
   peticionPost = async () => {
     delete this.state.form.id;
-    await axios.post(urlPost, this.state.form).then(response => {
+    await axios.post(urlPost, this.state.form,header).then(response => {
       this.modalInsertar();
       this.peticionGet();
     }).catch(error => {
@@ -46,17 +59,16 @@ class App extends Component {
     })
   }
 
- 
 
   peticionPut = () => {
-    axios.put(urlPut + this.state.form.id, this.state.form).then(response => {
+    axios.put(urlPut + this.state.form.id, this.state.form,header).then(response => {
       this.modalInsertar();
       this.peticionGet();
     })
   }
 
   peticionDelete=()=>{
-    axios.delete(urlDelete+this.state.form.id).then(response=>{
+    axios.delete(urlDelete+this.state.form.id,header).then(response=>{
       this.setState({modalEliminar: false});
       this.peticionGet();
     })
@@ -90,10 +102,17 @@ class App extends Component {
     console.log(this.state.form);
   }
 
-
-  componentDidMount() {
-    this.peticionGet();
+  cerrarSesion =()=>{
+    cookies.remove('token',{path: '/'});
+    window.location.href='./';
   }
+  
+  componentDidMount() {
+    if(!cookies.get('token')){
+        window.location.href="./";
+    }
+    this.peticionGet();
+}
 
   render() {
     const { form } = this.state
@@ -179,10 +198,11 @@ class App extends Component {
             <button className="btn btn-secundary" onClick={() => this.setState({ modalEliminar: false })}>No</button>
           </ModalFooter>
         </Modal>
-
+        <br />
+            <button onClick={()=>this.cerrarSesion()}>Cerrar Sesión</button>
       </div >
 
     );
   }
 }
-export default App;
+export default Product;

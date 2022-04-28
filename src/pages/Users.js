@@ -11,6 +11,12 @@ const urlPost = "http://localhost/ecomoving/public/api/user/create";
 const urlPut = "http://localhost/ecomoving/public/api/user/edit/";
 const urlDelete = "http://localhost/ecomoving/public/api/user/delete/";
 
+const header ={
+  headers: {
+    'Authorization': `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NTA5MDI2MDUsImV4cCI6MTY1MDk0NTgwNSwicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiJdLCJ1c2VybmFtZSI6ImhlY3RvckBnbWFpbC5jb20ifQ.KeHZVaBzkYyTI0TyAKOjEqTEkWCHSkHhSxVrpu8g2fl43bep8fnsmlVeDfFcT-A-ZYw_q3xUniAkIYiJoHrx66BvLrUMLpdfWiYz5KTZJnF6JNs1mijlKDEiPvAhmpJS1WbnL4ZEYg-mXybKs6kp5sgLOVi2HHnPSHRDmm2QAEbZPQg_0JBUpjiKILuwr8J9_Y1-wvKJ0gFAYR-oqKs-_FzPdZgYxPlIg9lh-B_V_IfVdGIXKyIEj62Q1UE_6Z9eu7IBgwLyGR3zzBfb0ht90RL-ODSzix3FtZxbh5wpDyuJzT7O3g2WHWnuTtgIKFea3w5IkbUI1kgFKRy4B6jmK_N4PWhVZIHMksNZ6VVVtNU801rPiyTYe1xoW48X6Lzn0si7LY4yjSt6i_4XvnIT2InwmOtQIUIxAR8ODfQAqDumGZ1mPi655vk1YVK9vLW1ixrZazrSCoEHb7IyJ67kn7XEM4M7qJZuqdJ-FCPDdiIkAbWpbWopfEEZc3AE7jfn8q6e2Sry63ZxRGfvm83X3Ff1kVO6tYpnvNhUP8iMWdjIfVQDzAzD8nU9VYCB_Y6VAxk9WrLvGErdesl6m0oOTL-8yKGbMyOOUaz-qXAkBnQHk07iS3qhK9vhlHl9Pw5YwiONTHuEhDVHw9prCaHKI3xV4-8w1S4H49hMUa6eayE`
+  }
+};
+
 class App extends Component {
   state = {
     data: [],
@@ -26,7 +32,7 @@ class App extends Component {
   }
 
   peticionGet = () => {
-    axios.get(urlGet).then((response) => {
+    axios.get(urlGet,header).then((response) => {
       console.log(response.data.items);
       console.log(response);
       this.setState({ data: response.data.items });
@@ -37,7 +43,7 @@ class App extends Component {
 
   peticionPost = async () => {
     delete this.state.form.id;
-    await axios.post(urlPost, this.state.form).then(response => {
+    await axios.post(urlPost, this.state.form,header).then(response => {
       this.modalInsertar();
       this.peticionGet();
     }).catch(error => {
@@ -48,14 +54,14 @@ class App extends Component {
  
 
   peticionPut = () => {
-    axios.put(urlPut + this.state.form.id, this.state.form).then(response => {
+    axios.put(urlPut + this.state.form.id, this.state.form,header).then(response => {
       this.modalInsertar();
       this.peticionGet();
     })
   }
 
   peticionDelete=()=>{
-    axios.delete(urlDelete+this.state.form.id).then(response=>{
+    axios.delete(urlDelete+this.state.form.id,header).then(response=>{
       this.setState({modalEliminar: false});
       this.peticionGet();
     })

@@ -7,13 +7,15 @@ import Packs from '../pages/Packs';
 import Users from '../pages/Users';
 import Orders from '../pages/Orders';
 import Role from '../pages/Role';
+import Login from '../pages/Login';
 
 function App() {
   
   return (
     <BrowserRouter>
         <Routes>
-          <Route exact path="/" element={<Dashboard/>}/>
+          <Route exact path="/" element={<Login/>}/>
+          <Route exact path="/dashboard" element={<Dashboard/>}/>
           <Route exact path="/product" element={<Product/>}/>
           <Route exact path="/category" element={<Category/>}/>
           <Route exact path="/packs" element={<Packs/>}/>
