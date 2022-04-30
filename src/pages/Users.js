@@ -6,15 +6,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 
+import Cookies from "universal-cookie";
+
+const cookies = new Cookies();
+
 const urlGet = "http://localhost/ecomoving/public/api/user/list";
 const urlPost = "http://localhost/ecomoving/public/api/user/create";
 const urlPut = "http://localhost/ecomoving/public/api/user/edit/";
 const urlDelete = "http://localhost/ecomoving/public/api/user/delete/";
 
-const header ={
+const token = cookies.get("token");
+
+const header = {
   headers: {
-    'Authorization': `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NTA5MDI2MDUsImV4cCI6MTY1MDk0NTgwNSwicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiJdLCJ1c2VybmFtZSI6ImhlY3RvckBnbWFpbC5jb20ifQ.KeHZVaBzkYyTI0TyAKOjEqTEkWCHSkHhSxVrpu8g2fl43bep8fnsmlVeDfFcT-A-ZYw_q3xUniAkIYiJoHrx66BvLrUMLpdfWiYz5KTZJnF6JNs1mijlKDEiPvAhmpJS1WbnL4ZEYg-mXybKs6kp5sgLOVi2HHnPSHRDmm2QAEbZPQg_0JBUpjiKILuwr8J9_Y1-wvKJ0gFAYR-oqKs-_FzPdZgYxPlIg9lh-B_V_IfVdGIXKyIEj62Q1UE_6Z9eu7IBgwLyGR3zzBfb0ht90RL-ODSzix3FtZxbh5wpDyuJzT7O3g2WHWnuTtgIKFea3w5IkbUI1kgFKRy4B6jmK_N4PWhVZIHMksNZ6VVVtNU801rPiyTYe1xoW48X6Lzn0si7LY4yjSt6i_4XvnIT2InwmOtQIUIxAR8ODfQAqDumGZ1mPi655vk1YVK9vLW1ixrZazrSCoEHb7IyJ67kn7XEM4M7qJZuqdJ-FCPDdiIkAbWpbWopfEEZc3AE7jfn8q6e2Sry63ZxRGfvm83X3Ff1kVO6tYpnvNhUP8iMWdjIfVQDzAzD8nU9VYCB_Y6VAxk9WrLvGErdesl6m0oOTL-8yKGbMyOOUaz-qXAkBnQHk07iS3qhK9vhlHl9Pw5YwiONTHuEhDVHw9prCaHKI3xV4-8w1S4H49hMUa6eayE`
-  }
+    Authorization: `Bearer ` + token,
+  },
 };
 
 class App extends Component {
@@ -51,7 +57,6 @@ class App extends Component {
     })
   }
 
- 
 
   peticionPut = () => {
     axios.put(urlPut + this.state.form.id, this.state.form,header).then(response => {
@@ -76,6 +81,8 @@ class App extends Component {
       tipoModal: 'actualizar',
       form: {
         id: user.id,
+        email:user.email,
+        password:user.password,
         firstName: user.firstName,
         lastName: user.lastName,
         address: user.address,
@@ -101,7 +108,15 @@ class App extends Component {
   }
 
 
+  cerrarSesion = () => {
+    cookies.remove("token", { path: "/" });
+    window.location.href = "./";
+  };
+
   componentDidMount() {
+    if (!cookies.get("token")) {
+      window.location.href = "./";
+    }
     this.peticionGet();
   }
 
@@ -116,6 +131,8 @@ class App extends Component {
           <thead>
             <tr>
               <th>ID</th>
+              <th>Email</th>
+
               <th>first name</th>
               <th>last name</th>
               <th>address</th>
@@ -133,6 +150,7 @@ class App extends Component {
               return (
                 <tr>
                   <td>{user.id}</td>
+                  <td>{user.email}</td>
                   <td>{user.firstName}</td>
                   <td>{user.lastName}</td>
                   <td>{user.address}</td>
@@ -163,6 +181,14 @@ class App extends Component {
 
               <label htmlFor="id">ID</label>
               <input className="form-control" type="text" name="id" id="id" readOnly onChange={this.handleChange} value={form ? form.id : this.state.data.length + 1} />
+              <br />
+
+              <label htmlFor="email">Email</label>
+              <input className="form-control" type="text" name="email" id="email" onChange={this.handleChange} value={form ? form.email : ''} />
+              <br />
+
+              <label htmlFor="password">Password</label>
+              <input className="form-control" type="text" name="password" id="password" onChange={this.handleChange} value={form ? form.password : ''} />
               <br />
 
               <label htmlFor="firstName">First Name</label>
